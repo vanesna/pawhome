@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-pawhome-dev-2f90f-authRole",
+      "UnauthRoleArn": "arn:aws:iam::683765097008:role/amplify-pawhome-dev-2f90f-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::683765097008:role/amplify-pawhome-dev-2f90f-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-pawhome-dev-2f90f-deployment",
+      "UnauthRoleName": "amplify-pawhome-dev-2f90f-unauthRole",
+      "StackName": "amplify-pawhome-dev-2f90f",
+      "StackId": "arn:aws:cloudformation:us-east-1:683765097008:stack/amplify-pawhome-dev-2f90f/77a064d0-8491-11f0-b06c-12404b95f95d",
+      "AmplifyAppId": "d1n2a9g37sn3ym"
+    },
+    "categories": {
+      "auth": {
+        "pawhome55e0437b": {}
+      }
+    }
+  }
+}

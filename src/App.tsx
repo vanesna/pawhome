@@ -1,4 +1,7 @@
-export default function App() {
+import { withAuthenticator } from "@aws-amplify/ui-react";
+import "@aws-amplify/ui-react/styles.css";
+
+function App({ signOut, user }: any) {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-6">
       {/* Header */}
@@ -7,18 +10,33 @@ export default function App() {
           🐾 Bienvenido a PawHome
         </h1>
         <p className="text-gray-600 text-lg">
-          Encuentra un nuevo hogar para tu mascota o adopta a tu nuevo mejor amigo.
+          {user
+            ? `Hola ${user.username}, ya estás autenticado ✅`
+            : "Encuentra un nuevo hogar para tu mascota o adopta a tu nuevo mejor amigo."}
         </p>
       </header>
 
       {/* Main */}
       <main className="max-w-2xl bg-white rounded-2xl shadow-md p-6 text-center">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-          Próximamente 🐶🐱
-        </h2>
-        <p className="text-gray-500">
-          Estamos construyendo algo increíble. Muy pronto podrás publicar y adoptar mascotas desde aquí.
-        </p>
+        {user ? (
+          <>
+            <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+              Próximamente 🐶🐱
+            </h2>
+            <p className="text-gray-500 mb-6">
+              Muy pronto podrás publicar y adoptar mascotas desde aquí.
+            </p>
+
+            <button
+              onClick={signOut}
+              className="mt-6 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+            >
+              Cerrar sesión
+            </button>
+          </>
+        ) : (
+          <p className="text-gray-500">Por favor inicia sesión para continuar.</p>
+        )}
       </main>
 
       {/* Footer */}
@@ -28,3 +46,5 @@ export default function App() {
     </div>
   );
 }
+
+export default withAuthenticator(App);
