@@ -124,30 +124,38 @@ export default function App() {
         >
           {({ signOut, user }) => (
             <div className="min-h-screen flex flex-col bg-gray-100">
-              <header className="bg-purple-600 text-white py-4 shadow-md">
-                <h1 className="text-center text-2xl font-bold">🐾 PawHome</h1>
+              {/* HEADER autenticado */}
+              <header className="bg-purple-600 text-white py-4 shadow-md flex items-center justify-between px-6">
+                {/* PawHome a la izquierda */}
+                <h1 className="text-2xl font-bold">🐾 PawHome</h1>
+
+                {/* Saludo y botón a la derecha */}
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm md:text-base">{`¡Hola, ${user?.signInDetails?.loginId?.split("@")[0]}!`}</span>
+                  <button
+                    onClick={signOut}
+                    className="px-4 py-1 bg-white text-purple-600 font-semibold rounded-lg shadow hover:bg-gray-100 transition"
+                  >
+                    Salir
+                  </button>
+                </div>
               </header>
 
+              {/* MAIN */}
               <main className="flex-1 flex items-center justify-center">
                 <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg p-8 text-center">
                   <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                    {`¡Hola ${user?.signInDetails?.loginId?.split("@")[0]}! 👋`}
+                    Bienvenido a PawHome 🐾
                   </h2>
 
                   <p className="text-gray-500 mb-6">
                     Ya estás autenticado ✅ Muy pronto podrás publicar y adoptar
                     mascotas desde aquí.
                   </p>
-
-                  <button
-                    onClick={signOut}
-                    className="mt-6 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
-                  >
-                    Cerrar sesión
-                  </button>
                 </div>
               </main>
 
+              {/* FOOTER */}
               <footer className="bg-gray-200 py-3 text-center text-gray-600 text-sm">
                 © {new Date().getFullYear()} PawHome. Todos los derechos reservados.
               </footer>
