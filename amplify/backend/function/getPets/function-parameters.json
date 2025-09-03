@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "auth": {
+      "pawhome55e0437b": [
+        "read"
+      ]
+    },
+    "storage": {
+      "petstable": [
+        "read"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}

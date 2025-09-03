@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "auth": {
+      "pawhome55e0437b": [
+        "create"
+      ]
+    },
+    "storage": {
+      "petstable": [
+        "create"
+      ]
+    },
+    "function": {
+      "getPets": [
+        "create"
+      ]
+    }
+  },
+  "lambdaLayers": []
+}
