@@ -9,10 +9,6 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
-  "dependencies": {
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
-  },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
     "@types/react": "^19.1.10",
@@ -28,5 +24,12 @@
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.39.1",
     "vite": "^7.1.2"
+  },
+  "dependencies": {
+    "@aws-amplify/auth": "^6.15.0",
+    "@aws-amplify/ui-react": "^6.12.0",
+    "aws-amplify": "^6.15.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   }
 }
