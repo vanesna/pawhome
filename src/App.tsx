@@ -1,6 +1,11 @@
+// src/App.tsx
+import { useState } from "react";
 import { Authenticator, ThemeProvider } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { I18n } from "@aws-amplify/core";
+import PetsList from "./pages/PetsList";
+import AddPetModal from "./pages/AddPetModal";
+import { addPet } from "../src/services/petsApi"; // 👈 asegúrate de tener esta función
 
 // 👉 Traducciones al español
 I18n.putVocabularies({
@@ -28,8 +33,6 @@ I18n.putVocabularies({
     "We Emailed You": "Te hemos enviado un correo electrónico",
   },
 });
-
-// 👉 Establecer idioma
 I18n.setLanguage("es");
 
 const pawHomeTheme = {
@@ -71,44 +74,22 @@ const pawHomeTheme = {
 };
 
 export default function App() {
+  const [showAddModal, setShowAddModal] = useState(false);
+
   return (
     <ThemeProvider theme={pawHomeTheme}>
       <div className="min-h-screen flex flex-col bg-gray-100">
         <Authenticator
           formFields={{
             signUp: {
-              name: {
-                label: "Nombre",
-                placeholder: "Ingresa tu nombre",
-                order: 1,
-              },
-              email: {
-                label: "Correo electrónico",
-                placeholder: "Ingresa tu correo",
-                order: 2,
-              },
-              password: {
-                label: "Contraseña",
-                placeholder: "Ingresa tu contraseña",
-                order: 3,
-              },
-              confirm_password: {
-                label: "Confirmar contraseña",
-                placeholder: "Confirma tu contraseña",
-                order: 4,
-              },
+              name: { label: "Nombre", placeholder: "Ingresa tu nombre", order: 1 },
+              email: { label: "Correo electrónico", placeholder: "Ingresa tu correo", order: 2 },
+              password: { label: "Contraseña", placeholder: "Ingresa tu contraseña", order: 3 },
+              confirm_password: { label: "Confirmar contraseña", placeholder: "Confirma tu contraseña", order: 4 },
             },
             signIn: {
-              username: {
-                label: "Correo electrónico",
-                placeholder: "Ingresa tu correo",
-                order: 1,
-              },
-              password: {
-                label: "Contraseña",
-                placeholder: "Ingresa tu contraseña",
-                order: 2,
-              },
+              username: { label: "Correo electrónico", placeholder: "Ingresa tu correo", order: 1 },
+              password: { label: "Contraseña", placeholder: "Ingresa tu contraseña", order: 2 },
             },
           }}
           components={{
@@ -125,11 +106,8 @@ export default function App() {
           {({ signOut, user }) => (
             <div className="min-h-screen flex flex-col bg-gray-100">
               {/* HEADER autenticado */}
-              <header className="bg-purple-600 text-white py-4 shadow-md flex items-center justify-between px-6">
-                {/* PawHome a la izquierda */}
+              <header className="bg-purple-600 text-white py-4 shadow-md flex items-center justify-between px-10">
                 <h1 className="text-2xl font-bold">🐾 PawHome</h1>
-
-                {/* Saludo y botón a la derecha */}
                 <div className="flex items-center space-x-4">
                   <span className="text-sm md:text-base">{`¡Hola, ${user?.signInDetails?.loginId?.split("@")[0]}!`}</span>
                   <button
@@ -141,17 +119,23 @@ export default function App() {
                 </div>
               </header>
 
-              {/* MAIN */}
-              <main className="flex-1 flex items-center justify-center">
-                <div className="max-w-xl w-full bg-white rounded-2xl shadow-lg p-8 text-center">
-                  <h2 className="text-2xl font-semibold text-gray-800 mb-4">
-                    Bienvenido a PawHome 🐾
-                  </h2>
+              {/* BOTÓN AGREGAR (izquierda, debajo del header) */}
+              <div className="px-20 mt-4 flex justify-start">
+                <button
+                  onClick={() => setShowAddModal(true)}
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition"
+                >
+                  <img src="../mascotas.png" alt="Icono mascota" className="w-8 h-8" />
+                  Publicar
+                </button>
+              </div>
 
-                  <p className="text-gray-500 mb-6">
-                    Ya estás autenticado ✅ Muy pronto podrás publicar y adoptar
-                    mascotas desde aquí.
-                  </p>
+              {/* MAIN: listado */}
+              <main className="flex-1 flex items-start justify-center py-6">
+                <div className="max-w-6xl w-full px-6">
+                  <div className="bg-white rounded-2xl shadow-lg p-6">
+                    <PetsList />
+                  </div>
                 </div>
               </main>
 
@@ -159,6 +143,24 @@ export default function App() {
               <footer className="bg-gray-200 py-3 text-center text-gray-600 text-sm">
                 © {new Date().getFullYear()} PawHome. Todos los derechos reservados.
               </footer>
+
+              {/* MODAL */}
+              {showAddModal && (
+                <AddPetModal
+                  isOpen={showAddModal}
+                  onClose={() => setShowAddModal(false)}
+                  onSubmit={async (pet) => {
+                    try {
+                      await addPet(pet);
+                      setShowAddModal(false);
+                      window.location.reload(); // luego lo cambiamos por un refetch elegante
+                    } catch (error) {
+                      console.error(error);
+                      alert("No se pudo guardar la mascota");
+                    }
+                  }}
+                />
+              )}
             </div>
           )}
         </Authenticator>
