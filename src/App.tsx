@@ -1,11 +1,13 @@
 // src/App.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Authenticator, ThemeProvider } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { I18n } from "@aws-amplify/core";
+
 import PetsList from "./pages/PetsList";
 import AddPetModal from "./pages/AddPetModal";
-import { addPet } from "../src/services/petsApi"; // 👈 asegúrate de tener esta función
+import { getPets } from "../src/services/petsApi";
+import type { Pet } from "./types"; 
 
 // 👉 Traducciones al español
 I18n.putVocabularies({
@@ -74,7 +76,21 @@ const pawHomeTheme = {
 };
 
 export default function App() {
-  const [showAddModal, setShowAddModal] = useState(false);
+  const [pets, setPets] = useState<Pet[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const loadPets = async () => {
+    try {
+      const data = await getPets();
+      setPets(data);
+    } catch (err) {
+      console.error("Error al obtener mascotas", err);
+    }
+  };
+
+  useEffect(() => {
+    loadPets();
+  }, []);
 
   return (
     <ThemeProvider theme={pawHomeTheme}>
@@ -119,48 +135,30 @@ export default function App() {
                 </div>
               </header>
 
-              {/* BOTÓN AGREGAR (izquierda, debajo del header) */}
               <div className="px-20 mt-4 flex justify-start">
-                <button
-                  onClick={() => setShowAddModal(true)}
-                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition"
-                >
+                <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition">
                   <img src="../mascotas.png" alt="Icono mascota" className="w-8 h-8" />
                   Publicar
                 </button>
               </div>
 
-              {/* MAIN: listado */}
               <main className="flex-1 flex items-start justify-center py-6">
                 <div className="max-w-6xl w-full px-6">
                   <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <PetsList />
+                    <PetsList pets={pets} />
                   </div>
                 </div>
               </main>
 
-              {/* FOOTER */}
               <footer className="bg-gray-200 py-3 text-center text-gray-600 text-sm">
                 © {new Date().getFullYear()} PawHome. Todos los derechos reservados.
               </footer>
 
-              {/* MODAL */}
-              {showAddModal && (
-                <AddPetModal
-                  isOpen={showAddModal}
-                  onClose={() => setShowAddModal(false)}
-                  onSubmit={async (pet) => {
-                    try {
-                      await addPet(pet);
-                      setShowAddModal(false);
-                      window.location.reload(); // luego lo cambiamos por un refetch elegante
-                    } catch (error) {
-                      console.error(error);
-                      alert("No se pudo guardar la mascota");
-                    }
-                  }}
-                />
-              )}
+              <AddPetModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                onPetAdded={loadPets}
+              />
             </div>
           )}
         </Authenticator>
