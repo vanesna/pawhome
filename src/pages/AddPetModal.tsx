@@ -1,23 +1,39 @@
 // src/pages/AddPetModal.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { uploadData } from "aws-amplify/storage";
 import { addPet } from "../services/petsApi";
 
 interface AddPetModalProps {
   onClose: () => void;
   onPetAdded: () => void;
-  isOpen?: boolean; // 👈 opcional para integrarse con App.tsx
+  isOpen?: boolean;
 }
 
 const AddPetModal: React.FC<AddPetModalProps> = ({ onClose, onPetAdded, isOpen }) => {
   const [nombre, setNombre] = useState("");
-  const [edad, setEdad] = useState<number>(0);
+  const [edadValor, setEdadValor] = useState<number>(0);
+  const [edadUnidad, setEdadUnidad] = useState<"meses" | "años">("años");
   const [tipo, setTipo] = useState("");
   const [sexo, setSexo] = useState("");
   const [localidad, setLocalidad] = useState("");
   const [foto, setFoto] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
 
-  if (!isOpen) return null; // 👈 se monta solo si el modal está abierto
+  // Resetear valores al cerrar modal
+  useEffect(() => {
+    if (!isOpen) {
+      setNombre("");
+      setEdadValor(0);
+      setEdadUnidad("años");
+      setTipo("");
+      setSexo("");
+      setLocalidad("");
+      setFoto(null);
+      setPreview(null);
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,24 +42,24 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose, onPetAdded, isOpen }
       let fotoKey: string | null = null;
 
       if (foto) {
-        // Generar un nombre único para la foto
-        const uniqueKey = `pets/${Date.now()}-${foto.name}`;
+        const uniqueKey = `pets/${Date.now()}-${foto.name.replace(/\s+/g, "_")}`;
         await uploadData({
           path: uniqueKey,
           data: foto,
         }).result;
-
         fotoKey = uniqueKey;
       }
 
-      // Llamar a la API para registrar la mascota con la referencia de la foto
+      // Construir edad como string (ej: "1 año", "6 meses")
+      const edad = `${edadValor} ${edadUnidad}`;
+
       await addPet({
         nombre,
-        edad,
+        edad, // ahora es string
         tipo,
         sexo,
         localidad,
-        fotoUrl: fotoKey, // guardamos la referencia en la BD
+        fotoUrl: fotoKey,
       });
 
       onPetAdded();
@@ -55,70 +71,131 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose, onPetAdded, isOpen }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-xl font-bold mb-4">Agregar Mascota</h2>
-        <form onSubmit={handleSubmit} className="space-y-3">
-          <input
-            type="text"
-            placeholder="Nombre"
-            value={nombre}
-            onChange={(e) => setNombre(e.target.value)}
-            className="w-full border rounded p-2"
-            required
-          />
-          <input
-            type="number"
-            placeholder="Edad"
-            value={edad}
-            onChange={(e) => setEdad(Number(e.target.value))}
-            className="w-full border rounded p-2"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Tipo"
-            value={tipo}
-            onChange={(e) => setTipo(e.target.value)}
-            className="w-full border rounded p-2"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Sexo"
-            value={sexo}
-            onChange={(e) => setSexo(e.target.value)}
-            className="w-full border rounded p-2"
-            required
-          />
-          <input
-            type="text"
-            placeholder="Localidad"
-            value={localidad}
-            onChange={(e) => setLocalidad(e.target.value)}
-            className="w-full border rounded p-2"
-            required
-          />
+    <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">
+      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeIn">
+        <h2 className="text-2xl font-bold text-purple-600 mb-6 text-center">
+          Agregar Mascota
+        </h2>
 
-          {/* Campo para subir foto */}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => setFoto(e.target.files ? e.target.files[0] : null)}
-            className="w-full border rounded p-2"
-          />
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Nombre */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Nombre</label>
+            <input
+              type="text"
+              value={nombre}
+              onChange={(e) => setNombre(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none"
+              required
+            />
+          </div>
 
-          <div className="flex justify-end space-x-2">
+          {/* Edad (valor + unidad) */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Edad</label>
+            <div className="flex gap-2">
+              <input
+                type="number"
+                min={0}
+                value={edadValor}
+                onChange={(e) => setEdadValor(Number(e.target.value))}
+                className="w-2/3 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none"
+                required
+              />
+              <select
+                value={edadUnidad}
+                onChange={(e) => setEdadUnidad(e.target.value as "meses" | "años")}
+                className="w-1/3 border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none"
+              >
+                <option value="años">Años</option>
+                <option value="meses">Meses</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Tipo */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Tipo</label>
+            <select
+              value={tipo}
+              onChange={(e) => setTipo(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none"
+              required
+            >
+              <option value="">Selecciona...</option>
+              <option value="Perro">Perro</option>
+              <option value="Gato">Gato</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </div>
+
+          {/* Sexo */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Sexo</label>
+            <select
+              value={sexo}
+              onChange={(e) => setSexo(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none"
+              required
+            >
+              <option value="">Selecciona...</option>
+              <option value="Macho">Macho</option>
+              <option value="Hembra">Hembra</option>
+            </select>
+          </div>
+
+          {/* Localidad */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Localidad</label>
+            <input
+              type="text"
+              value={localidad}
+              onChange={(e) => setLocalidad(e.target.value)}
+              className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none"
+              required
+            />
+          </div>
+
+          {/* Foto */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Foto</label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files ? e.target.files[0] : null;
+                setFoto(file);
+                if (file) {
+                  const reader = new FileReader();
+                  reader.onloadend = () => setPreview(reader.result as string);
+                  reader.readAsDataURL(file);
+                } else {
+                  setPreview(null);
+                }
+              }}
+              className="w-full border rounded-lg px-3 py-2"
+            />
+            {preview && (
+              <img
+                src={preview}
+                alt="Vista previa"
+                className="mt-3 h-32 w-32 object-cover rounded-lg border"
+              />
+            )}
+          </div>
+
+          {/* Botones */}
+          <div className="flex justify-end gap-3 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition"
             >
               Guardar
             </button>

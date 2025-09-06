@@ -57,7 +57,7 @@ export default function PetsList({ pets }: PetsListProps) {
           <p className="text-gray-600">Edad: {pet.edad}</p>
           <p className="text-gray-600">Tipo: {pet.tipo}</p>
           <p className="text-gray-600">Sexo: {pet.sexo}</p>
-          <p className="text-gray-600">Localidad: {pet.localidad}</p>
+          <p className="text-gray-600">Ubicación: {pet.localidad}</p>
           <button className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition">
             Adoptar
           </button>

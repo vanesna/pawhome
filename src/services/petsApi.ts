@@ -11,7 +11,7 @@ export async function getPets() {
 
 export async function addPet(pet: {
   nombre: string;
-  edad: number;
+  edad: string;
   tipo: string;
   sexo: string;
   localidad: string;
