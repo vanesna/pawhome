@@ -141,6 +141,11 @@
     }
   },
   "storage": {
+    "petImages": {
+      "dependsOn": [],
+      "providerPlugin": "awscloudformation",
+      "service": "S3"
+    },
     "petstable": {
       "providerPlugin": "awscloudformation",
       "service": "DynamoDB"

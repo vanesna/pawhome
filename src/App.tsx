@@ -3,11 +3,15 @@ import { useState, useEffect } from "react";
 import { Authenticator, ThemeProvider } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
 import { I18n } from "@aws-amplify/core";
+import { Amplify } from "aws-amplify";
+import awsExports from "./aws-exports";
 
 import PetsList from "./pages/PetsList";
 import AddPetModal from "./pages/AddPetModal";
 import { getPets } from "../src/services/petsApi";
 import type { Pet } from "./types"; 
+
+Amplify.configure(awsExports);
 
 // 👉 Traducciones al español
 I18n.putVocabularies({

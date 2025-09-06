@@ -34,6 +34,10 @@ export type AmplifyDependentResourcesAttributes = {
     }
   },
   "storage": {
+    "petImages": {
+      "BucketName": "string",
+      "Region": "string"
+    },
     "petstable": {
       "Arn": "string",
       "Name": "string",

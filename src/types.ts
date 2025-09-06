@@ -6,4 +6,5 @@ export interface Pet {
   tipo: string;
   sexo: string;
   localidad: string;
+  foto?: string | null;
 }

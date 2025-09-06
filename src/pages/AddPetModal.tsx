@@ -1,132 +1,132 @@
 // src/pages/AddPetModal.tsx
 import React, { useState } from "react";
+import { uploadData } from "aws-amplify/storage";
 import { addPet } from "../services/petsApi";
-import type { Pet } from "../types";
 
 interface AddPetModalProps {
-  isOpen: boolean;
   onClose: () => void;
   onPetAdded: () => void;
+  isOpen?: boolean; // 👈 opcional para integrarse con App.tsx
 }
 
-export default function AddPetModal({ isOpen, onClose, onPetAdded }: AddPetModalProps) {
-  const [formData, setFormData] = useState<Omit<Pet, "id">>({
-    nombre: "",
-    edad: 0,
-    tipo: "",
-    sexo: "",
-    localidad: "",
-  });
+const AddPetModal: React.FC<AddPetModalProps> = ({ onClose, onPetAdded, isOpen }) => {
+  const [nombre, setNombre] = useState("");
+  const [edad, setEdad] = useState<number>(0);
+  const [tipo, setTipo] = useState("");
+  const [sexo, setSexo] = useState("");
+  const [localidad, setLocalidad] = useState("");
+  const [foto, setFoto] = useState<File | null>(null);
 
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "edad" ? Number(value) : value,
-    }));
-  };
+  if (!isOpen) return null; // 👈 se monta solo si el modal está abierto
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+
     try {
-      await addPet(formData);
-      setSuccess("¡Mascota agregada exitosamente!");
-      onPetAdded(); // refresca listado
-      setFormData({ nombre: "", edad: 0, tipo: "", sexo: "", localidad: "" });
-      setTimeout(() => {
-        setSuccess("");
-        onClose();
-      }, 1200);
-    } catch (err) {
-      setError("Error al guardar mascota. Intenta de nuevo.");
-      console.error(err);
-    } finally {
-      setLoading(false);
+      let fotoKey: string | null = null;
+
+      if (foto) {
+        // Generar un nombre único para la foto
+        const uniqueKey = `pets/${Date.now()}-${foto.name}`;
+        await uploadData({
+          path: uniqueKey,
+          data: foto,
+        }).result;
+
+        fotoKey = uniqueKey;
+      }
+
+      // Llamar a la API para registrar la mascota con la referencia de la foto
+      await addPet({
+        nombre,
+        edad,
+        tipo,
+        sexo,
+        localidad,
+        fotoUrl: fotoKey, // guardamos la referencia en la BD
+      });
+
+      onPetAdded();
+      onClose();
+    } catch (error) {
+      console.error("Error al agregar mascota:", error);
+      alert("Hubo un problema al guardar la mascota.");
     }
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-      <div className="bg-white rounded-2xl p-6 w-96 shadow-lg relative">
-        <h2 className="text-2xl font-bold mb-4 text-purple-600">Agregar Mascota</h2>
-
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 className="text-xl font-bold mb-4">Agregar Mascota</h2>
+        <form onSubmit={handleSubmit} className="space-y-3">
           <input
             type="text"
-            name="nombre"
             placeholder="Nombre"
-            value={formData.nombre}
-            onChange={handleChange}
+            value={nombre}
+            onChange={(e) => setNombre(e.target.value)}
+            className="w-full border rounded p-2"
             required
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
           <input
             type="number"
-            name="edad"
             placeholder="Edad"
-            value={formData.edad || ""}
-            onChange={handleChange}
+            value={edad}
+            onChange={(e) => setEdad(Number(e.target.value))}
+            className="w-full border rounded p-2"
             required
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
           <input
             type="text"
-            name="tipo"
-            placeholder="Tipo (perro/gato)"
-            value={formData.tipo}
-            onChange={handleChange}
+            placeholder="Tipo"
+            value={tipo}
+            onChange={(e) => setTipo(e.target.value)}
+            className="w-full border rounded p-2"
             required
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
           <input
             type="text"
-            name="sexo"
-            placeholder="Sexo (macho/hembra)"
-            value={formData.sexo}
-            onChange={handleChange}
+            placeholder="Sexo"
+            value={sexo}
+            onChange={(e) => setSexo(e.target.value)}
+            className="w-full border rounded p-2"
             required
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
           <input
             type="text"
-            name="localidad"
             placeholder="Localidad"
-            value={formData.localidad}
-            onChange={handleChange}
+            value={localidad}
+            onChange={(e) => setLocalidad(e.target.value)}
+            className="w-full border rounded p-2"
             required
-            className="border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-purple-400"
           />
 
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          {success && <p className="text-green-500 text-sm">{success}</p>}
+          {/* Campo para subir foto */}
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setFoto(e.target.files ? e.target.files[0] : null)}
+            className="w-full border rounded p-2"
+          />
 
-          <div className="flex justify-end gap-2 mt-4">
+          <div className="flex justify-end space-x-2">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition"
-              disabled={loading}
+              className="px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500"
             >
               Cancelar
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition"
-              disabled={loading}
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
             >
-              {loading ? "Guardando..." : "Guardar"}
+              Guardar
             </button>
           </div>
         </form>
       </div>
     </div>
   );
-}
+};
+
+export default AddPetModal;

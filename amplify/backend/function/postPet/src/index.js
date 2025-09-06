@@ -31,6 +31,7 @@ exports.handler = async (event) => {
       tipo: body.tipo,
       sexo: body.sexo,
       localidad: body.localidad,
+      foto: body.fotoUrl || null,
     };
 
     await ddb.send(
@@ -42,7 +43,7 @@ exports.handler = async (event) => {
 
     return {
       statusCode: 200,
-        headers,
+      headers,
       body: JSON.stringify(pet),
     };
   } catch (err) {
