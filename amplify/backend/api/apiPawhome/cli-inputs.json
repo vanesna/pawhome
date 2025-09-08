@@ -1,0 +1,28 @@
+{
+  "version": 1,
+  "paths": {
+    "/pets": {
+      "name": "/pets",
+      "lambdaFunction": "getPets",
+      "permissions": {
+        "setting": "protected",
+        "auth": [
+          "read"
+        ],
+        "guest": [
+          "read"
+        ]
+      }
+    },
+    "/pet": {
+      "name": "/pet",
+      "lambdaFunction": "postPet",
+      "permissions": {
+        "setting": "private",
+        "auth": [
+          "create"
+        ]
+      }
+    }
+  }
+}

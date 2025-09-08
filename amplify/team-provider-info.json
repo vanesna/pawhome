@@ -9,11 +9,29 @@
       "UnauthRoleName": "amplify-pawhome-dev-2f90f-unauthRole",
       "StackName": "amplify-pawhome-dev-2f90f",
       "StackId": "arn:aws:cloudformation:us-east-1:683765097008:stack/amplify-pawhome-dev-2f90f/77a064d0-8491-11f0-b06c-12404b95f95d",
-      "AmplifyAppId": "d1n2a9g37sn3ym"
+      "AmplifyAppId": "d1n2a9g37sn3ym",
+      "APIGatewayAuthURL": "https://s3.amazonaws.com/amplify-pawhome-dev-2f90f-deployment/amplify-cfn-templates/api/APIGatewayAuthStack.json"
     },
     "categories": {
       "auth": {
         "pawhome55e0437b": {}
+      },
+      "function": {
+        "getPets": {
+          "deploymentBucketName": "amplify-pawhome-dev-2f90f-deployment",
+          "s3Key": "amplify-builds/getPets-4439576e454f4e6f7056-build.zip"
+        },
+        "postPet": {
+          "deploymentBucketName": "amplify-pawhome-dev-2f90f-deployment",
+          "s3Key": "amplify-builds/postPet-696a6251393255576735-build.zip"
+        }
+      },
+      "storage": {
+        "petstable": {},
+        "petImages": {}
+      },
+      "api": {
+        "apiPawhome": {}
       }
     }
   }
