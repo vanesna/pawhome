@@ -1,0 +1,18 @@
+{
+  "resourceName": "petImages",
+  "policyUUID": "047c52c7",
+  "bucketName": "pawhomef46bd308addd4262beb12c14f2faecaf",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "authAccess": [
+    "CREATE_AND_UPDATE",
+    "READ",
+    "DELETE"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}

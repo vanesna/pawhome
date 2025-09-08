@@ -1,0 +1,10 @@
+{
+  "resourceName": "petstable",
+  "tableName": "Pets",
+  "partitionKey": {
+    "fieldName": "id",
+    "fieldType": "string"
+  },
+  "gsi": [],
+  "triggerFunctions": []
+}
