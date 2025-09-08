@@ -41,34 +41,28 @@ export default function PetsList({ pets }: PetsListProps) {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6 justify-center">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       {pets.map((pet) => (
         <div
           key={pet.id}
-          className="bg-gradient-to-br from-purple-50 to-purple-100 border border-purple-200 rounded-2xl p-4 sm:p-6 shadow-lg hover:shadow-2xl transition transform hover:-translate-y-1 flex flex-col items-center w-full max-w-xs"
+          className="bg-white border rounded-2xl p-6 shadow hover:shadow-lg transition transform hover:-translate-y-1"
         >
           <img
-            src={photoUrls[pet.id] || "/default-pet.png"}
+            src={photoUrls[pet.id] || "/default-pet.png"} // fallback por defecto
             alt={pet.nombre}
-            className="w-full h-40 sm:h-48 object-cover object-center rounded-2xl mb-3 sm:mb-4 shadow-sm"
+            className="w-full h-48 object-cover rounded-lg mb-4"
           />
 
-          <h3 className="text-purple-700 font-extrabold text-xl sm:text-2xl mb-1 sm:mb-2 text-center drop-shadow-sm">
-            {pet.nombre}
-          </h3>
-
-          <div className="text-gray-700 text-center mb-3 sm:mb-4 text-sm sm:text-base space-y-0.5">
-            <p>Edad: {pet.edad}</p>
-            <p>Sexo: {pet.sexo}</p>
-            <p>Ubicación: {pet.localidad}</p>
-          </div>
-
-          <button className="mt-2 px-4 sm:px-6 py-2 bg-purple-600 text-white rounded-full shadow-md hover:bg-purple-700 hover:scale-105 transition transform font-semibold text-sm sm:text-base">
+          <h3 className="text-purple-600 font-bold text-xl mb-2">{pet.nombre}</h3>
+          <p className="text-gray-600">Edad: {pet.edad}</p>
+          <p className="text-gray-600">Tipo: {pet.tipo}</p>
+          <p className="text-gray-600">Sexo: {pet.sexo}</p>
+          <p className="text-gray-600">Ubicación: {pet.localidad}</p>
+          <button className="mt-4 px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition">
             Adoptar
           </button>
         </div>
       ))}
     </div>
-
   );
 }
