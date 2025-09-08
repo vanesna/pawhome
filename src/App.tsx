@@ -9,7 +9,7 @@ import awsExports from "./aws-exports";
 import PetsList from "./pages/PetsList";
 import AddPetModal from "./pages/AddPetModal";
 import { getPets } from "../src/services/petsApi";
-import type { Pet } from "./types"; 
+import type { Pet } from "./types";
 
 Amplify.configure(awsExports);
 
@@ -116,8 +116,16 @@ export default function App() {
             Header() {
               return (
                 <header className="bg-purple-600 text-white py-6 shadow-md rounded-t-2xl">
-                  <h1 className="text-center text-2xl font-bold">🐾 PawHome</h1>
+                  <div className="flex items-center justify-center space-x-3">
+                    <img
+                      src="../mascotas.png"
+                      alt="Icono mascota"
+                      className="w-13 h-13"
+                    />
+                    <h1 className="text-3xl font-bold text-center">PawHome</h1>
+                  </div>
                 </header>
+
               );
             },
           }}
@@ -126,25 +134,47 @@ export default function App() {
           {({ signOut, user }) => (
             <div className="min-h-screen flex flex-col bg-gray-100">
               {/* HEADER autenticado */}
-              <header className="bg-purple-600 text-white py-4 shadow-md flex items-center justify-between px-10">
-                <h1 className="text-2xl font-bold">🐾 PawHome</h1>
-                <div className="flex items-center space-x-4">
-                  <span className="text-sm md:text-base">{`¡Hola, ${user?.signInDetails?.loginId?.split("@")[0]}!`}</span>
-                  <button
-                    onClick={signOut}
-                    className="px-4 py-1 bg-white text-purple-600 font-semibold rounded-lg shadow hover:bg-gray-100 transition"
-                  >
-                    Salir
-                  </button>
+              <header className="bg-purple-600 text-white py-4 shadow-md px-6 md:px-10">
+                <div className="flex flex-col md:flex-row items-center md:justify-between space-y-3 md:space-y-0">
+                  {/* Logo + título */}
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src="../mascotas.png"
+                      alt="Icono mascota"
+                      className="w-10 h-10 md:w-12 md:h-12"
+                    />
+                    <h1 className="text-2xl md:text-3xl font-bold">PawHome</h1>
+                  </div>
+
+                  {/* Usuario + botón salir */}
+                  <div className="flex items-center space-x-3 md:space-x-4">
+                    <span className="text-sm md:text-base text-center md:text-left">
+                      {`¡Hola, ${user?.signInDetails?.loginId?.split("@")[0]}!`}
+                    </span>
+                    <button
+                      onClick={signOut}
+                      className="px-3 py-1 bg-white text-purple-600 font-semibold rounded-lg shadow hover:bg-gray-100 transition text-sm md:text-base"
+                    >
+                      Salir
+                    </button>
+                  </div>
                 </div>
               </header>
 
-              <div className="px-20 mt-4 flex justify-start">
-                <button onClick={() => setIsModalOpen(true)} className="flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition">
-                  <img src="../mascotas.png" alt="Icono mascota" className="w-8 h-8" />
-                  Publicar
+              <div className="px-[5%] mt-4 flex justify-end">
+                <button
+                  onClick={() => setIsModalOpen(true)}
+                  className="flex items-center gap-1 md:gap-2 px-3 py-1 md:px-4 md:py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition font-semibold text-sm md:text-base"
+                >
+                  <img
+                    src="../mascota-cora.png"
+                    alt="Icono mascota"
+                    className="w-6 h-6 md:w-9 md:h-9"
+                  />
+                  Publicar mascota
                 </button>
               </div>
+
 
               <main className="flex-1 flex items-start justify-center py-6">
                 <div className="max-w-6xl w-full px-6">
