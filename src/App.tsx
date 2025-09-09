@@ -161,25 +161,10 @@ export default function App() {
                 </div>
               </header>
 
-              <div className="px-[5%] mt-4 flex justify-end">
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="flex items-center gap-1 md:gap-2 px-3 py-1 md:px-4 md:py-2 bg-purple-600 text-white rounded-lg shadow hover:bg-purple-700 transition font-semibold text-sm md:text-base"
-                >
-                  <img
-                    src="../mascota-cora.png"
-                    alt="Icono mascota"
-                    className="w-6 h-6 md:w-9 md:h-9"
-                  />
-                  Publicar mascota
-                </button>
-              </div>
-
-
               <main className="flex-1 flex items-start justify-center py-6">
                 <div className="max-w-6xl w-full px-6">
                   <div className="bg-white rounded-2xl shadow-lg p-6">
-                    <PetsList pets={pets} />
+                    <PetsList pets={pets} onAddPet={() => setIsModalOpen(true)} />
                   </div>
                 </div>
               </main>
