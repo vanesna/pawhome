@@ -95,7 +95,7 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose, onPetAdded, isOpen }
             <label className="block text-sm font-medium text-gray-700">Edad</label>
             <div className="flex gap-2">
               <input
-                type="number"
+                type="text"
                 min={0}
                 value={edadValor}
                 onChange={(e) => setEdadValor(Number(e.target.value))}
