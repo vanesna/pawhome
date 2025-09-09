@@ -74,7 +74,7 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose, onPetAdded, isOpen }
     <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-50">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6 animate-fadeIn">
         <h2 className="text-2xl font-bold text-purple-600 mb-6 text-center">
-          Agregar Mascota
+          Publicar Mascota
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -147,13 +147,22 @@ const AddPetModal: React.FC<AddPetModalProps> = ({ onClose, onPetAdded, isOpen }
           {/* Localidad */}
           <div>
             <label className="block text-sm font-medium text-gray-700">Ubicación</label>
-            <input
-              type="text"
+            <select
               value={localidad}
               onChange={(e) => setLocalidad(e.target.value)}
               className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-purple-500 outline-none"
               required
-            />
+            >
+              <option value="">Selecciona un estado</option>
+              {[
+                "Aguascalientes", "Baja California", "Baja California Sur", "Campeche", "Chiapas", "Chihuahua",
+                "Ciudad de México", "Coahuila", "Colima", "Durango", "Guanajuato", "Guerrero", "Hidalgo", "Jalisco",
+                "Estado de México", "Michoacán", "Morelos", "Nayarit", "Nuevo León", "Oaxaca", "Puebla", "Querétaro", "Quintana Roo",
+                "San Luis Potosí", "Sinaloa", "Sonora", "Tabasco", "Tamaulipas", "Tlaxcala", "Veracruz", "Yucatán", "Zacatecas"
+              ].map((estado) => (
+                <option key={estado} value={estado}>{estado}</option>
+              ))}
+            </select>
           </div>
 
           {/* Foto */}
