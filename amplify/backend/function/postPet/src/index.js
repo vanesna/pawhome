@@ -24,8 +24,14 @@ exports.handler = async (event) => {
       };
     }
 
+    const userId =
+      event.requestContext?.authorizer?.claims?.sub ||
+      "anon-" + crypto.randomUUID();
+    console.log("User ID:", userId);
+
     const pet = {
       id: crypto.randomUUID(),
+      ownerID: userId,
       nombre: body.nombre,
       edad: body.edad,
       tipo: body.tipo,
