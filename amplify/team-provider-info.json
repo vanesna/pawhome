@@ -23,7 +23,7 @@
         },
         "postPet": {
           "deploymentBucketName": "amplify-pawhome-dev-2f90f-deployment",
-          "s3Key": "amplify-builds/postPet-696a6251393255576735-build.zip"
+          "s3Key": "amplify-builds/postPet-3573436b756a38697533-build.zip"
         }
       },
       "storage": {
